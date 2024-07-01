@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:prayers/screens/homepage.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'go_router_refresh_stream.dart';
+import 'not_found_screen.dart';
+
+part 'app_router.g.dart';
+
+// private navigators
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
+enum AppRoute {
+  onboarding,
+  signIn,
+  home,
+  profile,
+}
+
+@riverpod
+GoRouter goRouter(GoRouterRef ref) {
+
+  return GoRouter(
+    initialLocation: '/home',
+    redirect: (context, state) async {
+
+      // final path = state.uri.path;
+      // final sharedPreferences = await SharedPreferences.getInstance();
+      // String? uid = sharedPreferences.getString("uid");
+      // if(uid == null) {
+      //   if (path != '/signIn') {
+      //     return '/signIn';
+      //   }else{
+      //     return null;
+      //   }
+      // }
+
+      //final isLoggedIn = authRepository.currentUser != null;
+      //if (isLoggedIn) {
+      //   if (path.startsWith('/onboarding') ||
+      //       path.startsWith('/signIn')) {
+      //     return '/home';
+      //   }
+      // } else {
+      //   if (path.startsWith('/onboarding') ||
+      //       path.startsWith('/home') ||
+      //       path.startsWith('/account')) {
+      //     return '/signIn';
+      //   }
+      // }
+      return null;
+    },
+    // refresh 시점: 어떤 state가 변경될때 refresh 시도할 것인지?
+    //refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
+    routes: [
+      GoRoute(
+        path: '/home',
+        name: AppRoute.home.name,
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: MyHomePage(),
+        ),
+      ),
+    ],
+    errorPageBuilder: (context, state) => const NoTransitionPage(
+      child: NotFoundScreen(),
+    ),
+  );
+}

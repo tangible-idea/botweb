@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "265910542594",
+    "project_id": "prayers-224ad",
+    "storage_bucket": "prayers-224ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265910542594:android:12b0851ebd4f15da3b621b",
+        "android_client_info": {
+          "package_name": "net.tangibleidea.prayers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265910542594-be55odtuieu8969v98h5p432c7hh2lse.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.tangibleidea.prayers",
+            "certificate_hash": "fb207b96f597c2ba44203291a00c33df30623854"
+          }
+        },
+        {
+          "client_id": "265910542594-fmire1m10ikgo4plkl5nmh5pbg87gjtt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.tangibleidea.prayers",
+            "certificate_hash": "be9c7dfc40e8cde0a2f615f001020b924612b743"
+          }
+        },
+        {
+          "client_id": "265910542594-44dvld35pqla2esuuiuu2nkvoqrvlm0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHbJeGoF8rOyL8KiqvVg0cfVJn1wXjgJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265910542594-44dvld35pqla2esuuiuu2nkvoqrvlm0g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "265910542594-qalq0o3pdqrpqf8ba0opo93u71p5tn7b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "net.tangibleidea.prayers"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

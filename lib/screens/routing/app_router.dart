@@ -23,7 +23,7 @@ enum AppRoute {
 GoRouter goRouter(GoRouterRef ref) {
 
   return GoRouter(
-    initialLocation: '/home',
+    initialLocation: '/home/408097915036393',
     redirect: (context, state) async {
 
       // final path = state.uri.path;
@@ -56,10 +56,10 @@ GoRouter goRouter(GoRouterRef ref) {
     //refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
       GoRoute(
-        path: '/home',
+        path: '/home/:room',
         name: AppRoute.home.name,
         pageBuilder: (context, state) => NoTransitionPage(
-          child: MyHomePage(),
+          child: MyHomePage(roomTag: state.pathParameters['room']),
         ),
       ),
     ],

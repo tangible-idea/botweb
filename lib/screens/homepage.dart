@@ -11,6 +11,7 @@ import 'package:prayers/screens/routing/app_router.dart';
 import 'package:prayers/styles/my_color.dart';
 import 'package:prayers/styles/txt_style.dart';
 import 'package:prayers/widgets/avatar.dart';
+import '../riverpod/room_name_notifier.dart';
 import 'default_layout.dart';
 
 final tabIndexProvider = StateProvider((ref) => 0);
@@ -18,9 +19,7 @@ final tabIndexProvider = StateProvider((ref) => 0);
 class MyHomePage extends ConsumerStatefulWidget {
   static String id = "/home";
 
-
-
-  MyHomePage({super.key, this.title}) {
+  MyHomePage({super.key, this.title, this.roomTag}) {
   //gptUtils.initGPT();
 
   }
@@ -29,6 +28,7 @@ class MyHomePage extends ConsumerStatefulWidget {
   // final AIUtils aiUtils= AIUtils();
   // final FlutterInsta flutterInsta= FlutterInsta();
   final String? title;
+  final String? roomTag;
 
 
   Future<List<int>> _readDocumentData(String name) async {
@@ -42,9 +42,9 @@ class MyHomePage extends ConsumerStatefulWidget {
   String currClipboard= "";
 
   getClipboardData() async {
-  ClipboardData? data = await Clipboard.getData('text/plain');
-  currClipboard= data?.text.toString() ?? "";
-  //ref.read(messageProvider.notifier).state= currClipboard;
+    ClipboardData? data = await Clipboard.getData('text/plain');
+    currClipboard= data?.text.toString() ?? "";
+    //ref.read(messageProvider.notifier).state= currClipboard;
   }
 
   @override
@@ -55,11 +55,13 @@ class MyHomePage extends ConsumerStatefulWidget {
 
 class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProviderStateMixin {
   late TabController controller;
+  late String roomTag; // 방 id
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    roomTag = widget.roomTag ?? "";
     controller= TabController(length: 4, vsync: this);
   }
 
@@ -67,6 +69,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
 @override
   Widget build(BuildContext context) {
 
+      final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
       //final name= ref.watch(onBoardingNameProvider);
         // for tabs
       final tabIndex= ref.watch(tabIndexProvider);
@@ -85,28 +88,28 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       },
       currentIndex: tabIndex,
       items: const [
-        BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home"
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.groups),
-              label: "Group"
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.church),
-              label: "Church"
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: "Profile"
-            ),
-            ],),
-            fab: FloatingActionButton(
-            onPressed: ()=> {},
-      tooltip: 'tooltip',
-      child: const Icon(Icons.add),
-      ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home"
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.groups),
+            label: "Group"
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.church),
+            label: "Church"
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile"
+          ),
+        ],),
+        fab: FloatingActionButton(
+          onPressed: ()=> {},
+          tooltip: 'tooltip',
+          child: const Icon(Icons.add),
+        ),
       body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: TabBarView(
@@ -115,7 +118,11 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("엘세이보 목장", style: FigmaTextStyles.title30),
+                          groupNameAsyncValue.when(
+                            data: (name) => Text(name ?? '.', style: FigmaTextStyles.title30,),
+                            loading: () => const CircularProgressIndicator(),
+                            error: (error, stack) => Text('Error: $error'),
+                          ),
                         gapH4,
                         const Text("우리 목장: 매주 주일 14시 모임!\n느헤미야 기도 프로젝트 참석해주세요~", style: FigmaTextStyles.content16),
                         gapH48,

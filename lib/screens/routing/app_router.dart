@@ -25,31 +25,6 @@ GoRouter goRouter(GoRouterRef ref) {
   return GoRouter(
     initialLocation: '/home/408097915036393',
     redirect: (context, state) async {
-
-      // final path = state.uri.path;
-      // final sharedPreferences = await SharedPreferences.getInstance();
-      // String? uid = sharedPreferences.getString("uid");
-      // if(uid == null) {
-      //   if (path != '/signIn') {
-      //     return '/signIn';
-      //   }else{
-      //     return null;
-      //   }
-      // }
-
-      //final isLoggedIn = authRepository.currentUser != null;
-      //if (isLoggedIn) {
-      //   if (path.startsWith('/onboarding') ||
-      //       path.startsWith('/signIn')) {
-      //     return '/home';
-      //   }
-      // } else {
-      //   if (path.startsWith('/onboarding') ||
-      //       path.startsWith('/home') ||
-      //       path.startsWith('/account')) {
-      //     return '/signIn';
-      //   }
-      // }
       return null;
     },
     // refresh 시점: 어떤 state가 변경될때 refresh 시도할 것인지?

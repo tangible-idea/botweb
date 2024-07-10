@@ -7,12 +7,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prayers/constants/app_sizes.dart';
+import 'package:prayers/data/api/send_message.dart';
 import 'package:prayers/screens/routing/app_router.dart';
 import 'package:prayers/styles/my_color.dart';
 import 'package:prayers/styles/txt_style.dart';
 import 'package:prayers/widgets/avatar.dart';
 import '../riverpod/room_name_notifier.dart';
 import 'default_layout.dart';
+import 'group_view.dart';
+import 'message_form.dart';
 
 final tabIndexProvider = StateProvider((ref) => 0);
 
@@ -63,16 +66,34 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
 
     roomTag = widget.roomTag ?? "";
     controller= TabController(length: 4, vsync: this);
+    controller.addListener(_handleTabSelection);
   }
 
+  @override
+  void dispose() {
+    controller.removeListener(_handleTabSelection);
+    controller.dispose();
+    super.dispose();
+  }
 
-@override
+  void _handleTabSelection() {
+    if (controller.indexIsChanging) {
+      ref.read(tabIndexProvider.notifier).state = controller.index;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-      final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
+      //final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
       //final name= ref.watch(onBoardingNameProvider);
-        // for tabs
-      final tabIndex= ref.watch(tabIndexProvider);
+      final tabIndex = ref.watch(tabIndexProvider);
+
+      // Ensure the TabController is in sync with the provider
+      if (controller.index != tabIndex) {
+        controller.index = tabIndex;
+      }
+
       // for tabs
       return DefaultLayout(
           title: "",
@@ -82,11 +103,11 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
           selectedFontSize: 10,
           unselectedFontSize: 10,
           type: BottomNavigationBarType.fixed,
-          onTap: (int index)
-      {
-        ref.read(tabIndexProvider.notifier).update((state) => index);
-      },
-      currentIndex: tabIndex,
+          onTap: (int index) {
+            //ref.read(tabIndexProvider.notifier).update((state) => index);
+            controller.animateTo(index);
+          },
+      currentIndex: controller.index,
       items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -115,57 +136,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
               child: TabBarView(
                 controller: controller,
                 children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                          groupNameAsyncValue.when(
-                            data: (name) => Text(name ?? '.', style: FigmaTextStyles.title30,),
-                            loading: () => const CircularProgressIndicator(),
-                            error: (error, stack) => Text('Error: $error'),
-                          ),
-                        gapH4,
-                        const Text("우리 목장: 매주 주일 14시 모임!\n느헤미야 기도 프로젝트 참석해주세요~", style: FigmaTextStyles.content16),
-                        gapH48,
-                        /// Button1. TODO🎥
-                        const Row(children: [
-                          Avatar(radius: 30,),
-                          gapW16,
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("김아영", style: FigmaTextStyles.title26),
-                                Text("목자", style: FigmaTextStyles.content16)
-                              ],
-                            ),
-                          ],
-                        ),
-                        gapH20,
-                        const Row(children: [
-                          Avatar(radius: 30,),
-                          gapW16,
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("왕단비", style: FigmaTextStyles.title26),
-                              Text("부목자", style: FigmaTextStyles.content16)
-                            ],
-                          ),
-                        ],
-                        ),
-
-                      /// Button2. get POE bot
-                      Expanded(
-                        flex: 1,
-                        child: Center(
-                        child: IconButton(onPressed: () async {
-                      }, icon: const Icon(Icons.golf_course)),
-                      ),
-                      ),
-                  ],
-                ),
-                  const Placeholder(),
-                  const Placeholder(),
-                  const Placeholder(),
+                  GroupView(roomTag),
+                  MessageForm(),
+                  Placeholder(),
+                  Placeholder(),
             ],
           )
         )

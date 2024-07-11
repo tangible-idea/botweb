@@ -16,6 +16,7 @@ import '../riverpod/room_name_notifier.dart';
 import 'default_layout.dart';
 import 'group_view.dart';
 import 'message_form.dart';
+import 'message_screen.dart';
 
 final tabIndexProvider = StateProvider((ref) => 0);
 
@@ -137,8 +138,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
                 controller: controller,
                 children: [
                   GroupView(roomTag),
-                  MessageForm(),
-                  Placeholder(),
+                  const MessageForm(),
+                  MessageScreen(),
                   Placeholder(),
             ],
           )

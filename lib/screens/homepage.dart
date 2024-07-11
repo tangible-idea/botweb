@@ -137,10 +137,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
               child: TabBarView(
                 controller: controller,
                 children: [
+                  MessageScreen(roomTag),
                   GroupView(roomTag),
                   const MessageForm(),
-                  MessageScreen(),
-                  Placeholder(),
+                  const Placeholder(),
             ],
           )
         )

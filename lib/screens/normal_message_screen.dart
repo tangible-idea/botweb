@@ -3,14 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
+import '../riverpod/message_providers.dart';
 import '../styles/txt_style.dart';
 
 // Providers
 final selectedDaysProvider = StateNotifierProvider<SelectedDaysNotifier, List<bool>>((ref) {
   return SelectedDaysNotifier();
 });
-
-final timeValueProvider = StateProvider<double>((ref) => 12 * 60 + 20); // 12:20 PM in minutes
 
 final messageTypeProvider = StateProvider<String>((ref) => '나눠서');
 
@@ -47,6 +46,7 @@ class NormalMessageScreen extends ConsumerWidget {
       final selectedDays = ref.read(selectedDaysProvider);
       final timeValue = ref.read(timeValueProvider);
       final messageText = ref.read(messageTextProvider);
+      final sendersText = ref.read(sendersTextProvider);
 
       // 선택된 요일 중 가장 빠른 날짜 계산
       final now = DateTime.now();
@@ -59,28 +59,27 @@ class NormalMessageScreen extends ConsumerWidget {
         return;
       }
 
-      int daysUntilTarget = (selectedDayIndex - now.weekday + 7) % 7;
-      if (daysUntilTarget == 0 && now.hour * 60 + now.minute > timeValue) {
+      // weekday : 요일
+      int daysUntilTarget = ((selectedDayIndex+1) - now.weekday + 7) % 7;
+      if (daysUntilTarget == 0 && (now.hour > timeValue.hour || (now.hour == timeValue.hour && now.minute > timeValue.minute))) {
         daysUntilTarget = 7;  // 이미 지난 시간이면 다음 주로
       }
 
       final targetDate = now.add(Duration(days: daysUntilTarget));
       const kstOffset = Duration(hours: 9); // KST는 UTC+9
-      final hours = (timeValue ~/ 60).toInt();
-      final minutes = (timeValue % 60).toInt();
-      final targetTimeKST = DateTime(
+      final targetTime = DateTime(
         targetDate.year,
         targetDate.month,
         targetDate.day,
-        hours,
-        minutes,
-      ).add(kstOffset);
+        timeValue.hour,
+        timeValue.minute,
+      ).subtract(kstOffset);
 
       try {
         await supabase.from('announce').insert({
           'room_tag': roomTag,  // 실제 room_tag 값으로 교체 필요
           'message': messageText,
-          'target_time': targetTimeKST.toIso8601String(),
+          'target_time': targetTime.toIso8601String(),
           'sent': false,
         });
 
@@ -114,21 +113,23 @@ class NormalMessageScreen extends ConsumerWidget {
           }),
         ),
         gapH20,
-        //const Text('[시간]', style: FigmaTextStyles.title20),
-        //gapH8,
-        Text("시간: ${_formatTime(timeValue)}", style: FigmaTextStyles.title20),
 
-        // 슬라이더 15분 간격
-        Slider(
-          value: timeValue,
-          min: 0,
-          max: 24 * 60 - 1,
-          divisions: 24 * 4, // 15분 간격
-          label: _formatTime(timeValue),
-          onChanged: (value) {
-            ref.read(timeValueProvider.notifier).state = value;
-          },
-        ),
+        Row(children: [
+          Text(timeValue.format(context), style: FigmaTextStyles.title20),
+          gapW12,
+          ElevatedButton(
+            onPressed: () async {
+              TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: timeValue,
+              );
+              if (pickedTime != null && pickedTime != timeValue) {
+                ref.read(timeValueProvider.notifier).state = pickedTime;
+              }
+            },
+            child: const Text('시간 선택'),
+          ),
+        ],),
         gapH20,
         //const Text('[분할]', style: FigmaTextStyles.title20),
         DropdownButton<String>(

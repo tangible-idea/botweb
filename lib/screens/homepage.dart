@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:prayers/constants/app_sizes.dart';
 import 'package:prayers/data/api/send_message.dart';
+import 'package:prayers/screens/normal_message_screen.dart';
 import 'package:prayers/screens/routing/app_router.dart';
 import 'package:prayers/styles/my_color.dart';
 import 'package:prayers/styles/txt_style.dart';
@@ -16,7 +17,7 @@ import '../riverpod/room_name_notifier.dart';
 import 'default_layout.dart';
 import 'group_view.dart';
 import 'message_form.dart';
-import 'message_screen.dart';
+import 'target_message_screen.dart';
 
 final tabIndexProvider = StateProvider((ref) => 0);
 
@@ -135,10 +136,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       body: TabBarView(
         controller: controller,
         children: [
-          MessageScreen(roomTag),
+          TargetMessageScreen(roomTag),
+          NormalMessageScreen(roomTag),
           GroupView(roomTag),
           const MessageForm(),
-          const Placeholder(),
                   ],
                 )
       );

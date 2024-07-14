@@ -7,8 +7,8 @@ import '../riverpod/message_providers.dart';
 import '../styles/txt_style.dart';
 
 // UI
-class MessageScreen extends ConsumerWidget {
-  MessageScreen(this.roomTag, {super.key});
+class TargetMessageScreen extends ConsumerWidget {
+  TargetMessageScreen(this.roomTag, {super.key});
 
   final String roomTag;
 
@@ -166,16 +166,6 @@ class MessageScreen extends ConsumerWidget {
           ),
         ),
         gapH20,
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            child: const Text('방에서 기도제목 불러오기'),
-            onPressed: () {
-
-            },
-          ),
-        ),
-        gapH4,
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(

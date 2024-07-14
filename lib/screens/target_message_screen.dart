@@ -42,19 +42,21 @@ class TargetMessageScreen extends ConsumerWidget {
         return;
       }
 
-      int daysUntilTarget = (selectedDayIndex - now.weekday + 7) % 7;
+      // weekday : 요일
+      int daysUntilTarget = ((selectedDayIndex+1) - now.weekday + 7) % 7;
       if (daysUntilTarget == 0 && (now.hour > timeValue.hour || (now.hour == timeValue.hour && now.minute > timeValue.minute))) {
         daysUntilTarget = 7;  // 이미 지난 시간이면 다음 주로
       }
 
       final targetDate = now.add(Duration(days: daysUntilTarget));
+      const kstOffset = Duration(hours: 9); // KST는 UTC+9
       final targetTime = DateTime(
         targetDate.year,
         targetDate.month,
         targetDate.day,
         timeValue.hour,
         timeValue.minute,
-      );
+      ).subtract(kstOffset);
 
       try {
         await supabase.from('target_announce').insert({
@@ -78,9 +80,8 @@ class TargetMessageScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('미션 공지 메시지', style: FigmaTextStyles.title30,),
+        const Text('미션 공지', style: FigmaTextStyles.title30,),
         gapH20,
-        SizedBox(height: 10),
         Wrap(
           spacing: 10,
           children: List.generate(7, (index) {
@@ -135,8 +136,8 @@ class TargetMessageScreen extends ConsumerWidget {
               }).toList(),
             );
           },
-          loading: () => CircularProgressIndicator(),
-          error: (error, stackTrace) => Text('유저 목록을 불러오는 중 오류가 발생했습니다.'),
+          loading: () => const CircularProgressIndicator(),
+          error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'),
         ),
 
         gapH20,

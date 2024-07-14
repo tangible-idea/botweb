@@ -97,7 +97,7 @@ class NormalMessageScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('공지 메시지', style: FigmaTextStyles.title30,),
+        const Text('일반 공지', style: FigmaTextStyles.title30,),
         gapH20,
         //const Text('[요일]', style: FigmaTextStyles.title20),
         SizedBox(height: 10),

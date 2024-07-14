@@ -3,29 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
+import '../riverpod/message_providers.dart';
 import '../styles/txt_style.dart';
-
-// Providers
-final selectedDaysProvider = StateNotifierProvider<SelectedDaysNotifier, List<bool>>((ref) {
-  return SelectedDaysNotifier();
-});
-
-final timeValueProvider = StateProvider<double>((ref) => 12 * 60 + 20); // 12:20 PM in minutes
-
-final messageTypeProvider = StateProvider<String>((ref) => '나눠서');
-
-final messageTextProvider = StateProvider<String>((ref) => '');
-
-class SelectedDaysNotifier extends StateNotifier<List<bool>> {
-  SelectedDaysNotifier() : super(List.generate(7, (_) => false));
-
-  void toggle(int index) {
-    state = [
-      for (int i = 0; i < state.length; i++)
-        if (i == index) !state[i] else state[i]
-    ];
-  }
-}
 
 // UI
 class MessageScreen extends ConsumerWidget {
@@ -37,16 +16,20 @@ class MessageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     final selectedDays = ref.watch(selectedDaysProvider);
     final timeValue = ref.watch(timeValueProvider);
-    final messageType = ref.watch(messageTypeProvider);
     final messageText = ref.watch(messageTextProvider);
+    final sendersText = ref.watch(sendersTextProvider);
+
+    final distinctSendersAsyncValue = ref.watch(distinctSendersProvider(roomTag));
 
     final supabase = Supabase.instance.client;
     Future<void> saveAnnouncement(WidgetRef ref) async {
       final selectedDays = ref.read(selectedDaysProvider);
       final timeValue = ref.read(timeValueProvider);
       final messageText = ref.read(messageTextProvider);
+      final sendersText = ref.read(sendersTextProvider);
 
       // 선택된 요일 중 가장 빠른 날짜 계산
       final now = DateTime.now();
@@ -60,26 +43,25 @@ class MessageScreen extends ConsumerWidget {
       }
 
       int daysUntilTarget = (selectedDayIndex - now.weekday + 7) % 7;
-      if (daysUntilTarget == 0 && now.hour * 60 + now.minute > timeValue) {
+      if (daysUntilTarget == 0 && (now.hour > timeValue.hour || (now.hour == timeValue.hour && now.minute > timeValue.minute))) {
         daysUntilTarget = 7;  // 이미 지난 시간이면 다음 주로
       }
 
       final targetDate = now.add(Duration(days: daysUntilTarget));
-      final hours = (timeValue ~/ 60).toInt();
-      final minutes = (timeValue % 60).toInt();
       final targetTime = DateTime(
         targetDate.year,
         targetDate.month,
         targetDate.day,
-        hours,
-        minutes,
+        timeValue.hour,
+        timeValue.minute,
       );
 
       try {
-        await supabase.from('announce').insert({
+        await supabase.from('target_announce').insert({
           'room_tag': roomTag,  // 실제 room_tag 값으로 교체 필요
           'message': messageText,
           'target_time': targetTime.toIso8601String(),
+          'target_senders': sendersText.split(','),
           'sent': false,
         });
 
@@ -96,9 +78,8 @@ class MessageScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('공지 메시지', style: FigmaTextStyles.title30,),
+        const Text('미션 공지 메시지', style: FigmaTextStyles.title30,),
         gapH20,
-        //const Text('[요일]', style: FigmaTextStyles.title20),
         SizedBox(height: 10),
         Wrap(
           spacing: 10,
@@ -113,36 +94,65 @@ class MessageScreen extends ConsumerWidget {
           }),
         ),
         gapH20,
-        //const Text('[시간]', style: FigmaTextStyles.title20),
-        //gapH8,
-        Text("시간: ${_formatTime(timeValue)}", style: FigmaTextStyles.title20),
 
-        // 슬라이더 15분 간격
-        Slider(
-          value: timeValue,
-          min: 0,
-          max: 24 * 60 - 1,
-          divisions: 24 * 4, // 15분 간격
-          label: _formatTime(timeValue),
-          onChanged: (value) {
-            ref.read(timeValueProvider.notifier).state = value;
-          },
-        ),
+        Row(children: [
+          Text(timeValue.format(context), style: FigmaTextStyles.title20),
+          gapW12,
+          ElevatedButton(
+            onPressed: () async {
+              TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: timeValue,
+              );
+              if (pickedTime != null && pickedTime != timeValue) {
+                ref.read(timeValueProvider.notifier).state = pickedTime;
+              }
+            },
+            child: const Text('시간 선택'),
+          ),
+        ],),
+
         gapH20,
-        //const Text('[분할]', style: FigmaTextStyles.title20),
-        DropdownButton<String>(
-          value: messageType,
-          items: ['나눠서', '한꺼번에'].map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
+
+        distinctSendersAsyncValue.when(
+          data: (senders) {
+            return Wrap(
+              spacing: 10,
+              children: senders.map((sender) {
+                return ChoiceChip(
+                  label: Text(sender.sender),
+                  selected: sendersText.split(',').contains(sender.sender),
+                  onSelected: (isSelected) {
+                    final currentSenders = sendersText.split(',').where((s) => s.isNotEmpty).toList();
+                    if (isSelected) {
+                      currentSenders.add(sender.sender);
+                    } else {
+                      currentSenders.remove(sender.sender);
+                    }
+                    ref.read(sendersTextProvider.notifier).state = currentSenders.join(',');
+                  },
+                );
+              }).toList(),
             );
-          }).toList(),
-          onChanged: (String? newValue) {
-            ref.read(messageTypeProvider.notifier).state = newValue!;
           },
+          loading: () => CircularProgressIndicator(),
+          error: (error, stackTrace) => Text('유저 목록을 불러오는 중 오류가 발생했습니다.'),
         ),
+
         gapH20,
+        Expanded(
+          child: TextField(
+            maxLines: 1,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: '공지를 강조할 대상 목록 (콤마로 구분)',
+            ),
+            onChanged: (value) {
+              ref.read(sendersTextProvider.notifier).state = value;
+            },
+            controller: TextEditingController(text: sendersText),
+          ),
+        ),
         Expanded(
           child: TextField(
             maxLines: 20,
@@ -178,12 +188,4 @@ class MessageScreen extends ConsumerWidget {
       ],
     );
   }
-
-  String _formatTime(double minutes) {
-    int hours = (minutes ~/ 60) % 24;
-    int mins = (minutes % 60).toInt();
-    return '${hours.toString().padLeft(2, '0')}:${mins.toString().padLeft(2, '0')}';
-  }
-
-
 }

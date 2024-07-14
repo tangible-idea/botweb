@@ -132,18 +132,15 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
           tooltip: 'tooltip',
           child: const Icon(Icons.add),
         ),
-      body: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TabBarView(
-                controller: controller,
-                children: [
-                  MessageScreen(roomTag),
-                  GroupView(roomTag),
-                  const MessageForm(),
-                  const Placeholder(),
-            ],
-          )
-        )
+      body: TabBarView(
+        controller: controller,
+        children: [
+          MessageScreen(roomTag),
+          GroupView(roomTag),
+          const MessageForm(),
+          const Placeholder(),
+                  ],
+                )
       );
 
   }

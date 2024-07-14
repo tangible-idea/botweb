@@ -64,7 +64,7 @@ dependencies:
   # Supabase
   supabase_flutter: ^2.1.0
 
-  # .env
+  # dotenv
   flutter_dotenv: ^5.1.0
 
 

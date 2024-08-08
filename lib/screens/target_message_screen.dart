@@ -23,7 +23,9 @@ class TargetMessageScreen extends ConsumerWidget {
     final messageText = ref.watch(messageTextProvider);
     final sendersText = ref.watch(sendersTextProvider);
 
+    //try {
     final distinctSendersAsyncValue = ref.watch(distinctSendersProvider(roomTag));
+
 
     final supabase = Supabase.instance.client;
     Future<void> saveAnnouncement(WidgetRef ref) async {

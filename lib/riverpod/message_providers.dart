@@ -20,32 +20,31 @@ final distinctSendersProvider = FutureProvider.autoDispose.family<List<Sender>, 
   final supabase = Supabase.instance.client;
   final response = await supabase
       .rpc('get_distinct_senders_in_this_room', params: {'p_room_tag': roomTag});
+  print("$response");
 
-  // 응답의 에러 핸들링
   if (response.error != null) {
+    print('Failed to load senders: ${response.error!.message}');
     throw Exception('Failed to load senders: ${response.error!.message}');
   }
 
-  // 응답 데이터가 null인지 확인
   if (response.data == null) {
+    print('No data received');
     throw Exception('No data received');
   }
 
-  // 응답 데이터가 List 형태인지 확인하고 변환
-  final dynamic data = response.data;
-  if (data is! List) {
-    throw Exception('Unexpected data format: ${data.runtimeType}');
-  }
+  // Ensure data is treated as a List
+  final List<dynamic> data = response.data as List<dynamic>;
 
-  // 데이터 변환 및 예외 처리
   try {
-    return data.map((item) {
+    return data.map<Sender>((item) {
       if (item is! Map<String, dynamic>) {
+        print('Unexpected item format: ${item.runtimeType}');
         throw Exception('Unexpected item format: ${item.runtimeType}');
       }
       return Sender.fromMap(item);
     }).toList();
   } catch (e) {
+    print('Data processing error: $e');
     throw Exception('Data processing error: $e');
   }
 });

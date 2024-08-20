@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/screens/base_layout.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
@@ -93,91 +94,93 @@ class NormalMessageScreen extends ConsumerWidget {
       }
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('일반 공지', style: FigmaTextStyles.title30,),
-        gapH20,
-        //const Text('[요일]', style: FigmaTextStyles.title20),
-        SizedBox(height: 10),
-        Wrap(
-          spacing: 5,
-          children: List.generate(7, (index) {
-            return ChoiceChip(
-              label: Text(days[index]),
-              selected: selectedDays[index],
-              onSelected: (_) {
-                ref.read(selectedDaysProvider.notifier).toggle(index);
-              },
-            );
-          }),
-        ),
-        gapH20,
-
-        Row(children: [
-          Text(timeValue.format(context), style: FigmaTextStyles.title20),
-          gapW12,
-          ElevatedButton(
-            onPressed: () async {
-              TimeOfDay? pickedTime = await showTimePicker(
-                context: context,
-                initialTime: timeValue,
+    return BaseLayout(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('일반 공지', style: FigmaTextStyles.title30,),
+          gapH20,
+          //const Text('[요일]', style: FigmaTextStyles.title20),
+          SizedBox(height: 10),
+          Wrap(
+            spacing: 5,
+            children: List.generate(7, (index) {
+              return ChoiceChip(
+                label: Text(days[index]),
+                selected: selectedDays[index],
+                onSelected: (_) {
+                  ref.read(selectedDaysProvider.notifier).toggle(index);
+                },
               );
-              if (pickedTime != null && pickedTime != timeValue) {
-                ref.read(timeValueProvider.notifier).state = pickedTime;
-              }
-            },
-            child: const Text('시간 선택'),
+            }),
           ),
-        ],),
-        gapH20,
-        //const Text('[분할]', style: FigmaTextStyles.title20),
-        DropdownButton<String>(
-          value: messageType,
-          items: ['나눠서', '한꺼번에'].map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            ref.read(messageTypeProvider.notifier).state = newValue!;
-          },
-        ),
-        gapH20,
-        Expanded(
-          child: TextField(
-            maxLines: 20,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: '메시지를 입력하세요...',
+          gapH20,
+      
+          Row(children: [
+            Text(timeValue.format(context), style: FigmaTextStyles.title20),
+            gapW12,
+            ElevatedButton(
+              onPressed: () async {
+                TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: timeValue,
+                );
+                if (pickedTime != null && pickedTime != timeValue) {
+                  ref.read(timeValueProvider.notifier).state = pickedTime;
+                }
+              },
+              child: const Text('시간 선택'),
             ),
-            onChanged: (value) {
-              ref.read(messageTextProvider.notifier).state = value;
+          ],),
+          gapH20,
+          //const Text('[분할]', style: FigmaTextStyles.title20),
+          DropdownButton<String>(
+            value: messageType,
+            items: ['나눠서', '한꺼번에'].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              ref.read(messageTypeProvider.notifier).state = newValue!;
             },
           ),
-        ),
-        gapH20,
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            child: const Text('방에서 대화 불러오기'),
-            onPressed: () {
-
-            },
+          gapH20,
+          Expanded(
+            child: TextField(
+              maxLines: 20,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: '메시지를 입력하세요...',
+              ),
+              onChanged: (value) {
+                ref.read(messageTextProvider.notifier).state = value;
+              },
+            ),
           ),
-        ),
-        gapH4,
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            child: const Text('예약 저장'),
-            onPressed: () async {
-              await saveAnnouncement(ref);
-            },
+          gapH20,
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              child: const Text('방에서 대화 불러오기'),
+              onPressed: () {
+      
+              },
+            ),
           ),
-        ),
-      ],
+          gapH4,
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              child: const Text('예약 저장'),
+              onPressed: () async {
+                await saveAnnouncement(ref);
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 

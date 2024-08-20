@@ -21,9 +21,6 @@ class DefaultLayout extends StatelessWidget {
       ),
       floatingActionButton: fab, // This trailing comma makes auto-formatting nicer for build methods.
       backgroundColor: MyColor.kLightBackground,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: body,
-      ));
+      body: body);
   }
 }

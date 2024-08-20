@@ -97,8 +97,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       }
 
       // for tabs
-      return DefaultLayout(
-          title: "",
+      return Scaffold(
           bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: MyColor.kPrimary,
           unselectedItemColor: MyColor.kGrayedPrimary,
@@ -110,6 +109,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
             controller.animateTo(index);
           },
       currentIndex: controller.index,
+      backgroundColor: MyColor.kLightBackground,
       items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.notification_important_outlined),
@@ -128,7 +128,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
             label: "프로필"
           ),
         ],),
-        fab: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           onPressed: ()=> {},
           tooltip: 'tooltip',
           child: const Icon(Icons.add),

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/screens/base_layout.dart';
 
 import '../constants/app_sizes.dart';
 import '../models/PersonInfo.dart';
@@ -17,18 +18,18 @@ class GroupView extends ConsumerWidget {
 
 
   final List<PersonInfo> people = [
-    PersonInfo(name: "원아영", role: "목자"),
-    PersonInfo(name: "하예린", role: "순목자"),
-    PersonInfo(name: "강민규", role: "목원"),
-    PersonInfo(name: "김세련", role: "목원"),
-    PersonInfo(name: "이찬경", role: "목원"),
-    PersonInfo(name: "정윤기", role: "목원"),
-    PersonInfo(name: "전하는", role: "목원"),
-    PersonInfo(name: "문예은", role: "목원"),
-    PersonInfo(name: "김도형", role: "목원"),
-    PersonInfo(name: "박재현", role: "목원"),
-    PersonInfo(name: "최준혁", role: "목원"),
-    PersonInfo(name: "허열", role: "목원"),
+    PersonInfo(name: "원아영", role: "방장"),
+    PersonInfo(name: "하예린", role: "부방장"),
+    PersonInfo(name: "강민규", role: "구성원"),
+    PersonInfo(name: "김세련", role: "구성원"),
+    PersonInfo(name: "이찬경", role: "구성원"),
+    PersonInfo(name: "정윤기", role: "구성원"),
+    PersonInfo(name: "전하는", role: "구성원"),
+    PersonInfo(name: "문예은", role: "구성원"),
+    PersonInfo(name: "김도형", role: "구성원"),
+    PersonInfo(name: "박재현", role: "구성원"),
+    PersonInfo(name: "최준혁", role: "구성원"),
+    PersonInfo(name: "허열", role: "구성원"),
     // 추가 인물 정보...
   ];
 
@@ -37,40 +38,32 @@ class GroupView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
 
+    return SingleChildScrollView(
+      child: BaseLayout(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            groupNameAsyncValue.when(
+              data: (name) => Text(name ?? '.', style: FigmaTextStyles.title30,),
+              loading: () => const CircularProgressIndicator(),
+              error: (error, stack) => Text('Error: $error'),
+            ),
+            gapH4,
+            const Text("우리방 공지: 샘플",
+                style: FigmaTextStyles.content16),
+            gapH20,
 
+            /// Button1. TODO🎥
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        groupNameAsyncValue.when(
-          data: (name) => Text(name ?? '.', style: FigmaTextStyles.title30,),
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stack) => Text('Error: $error'),
+            //gapH20,
+
+              Column(
+                children: people.map((person) => PersonRow(person: person)).toList(),
+              ),
+
+          ],
         ),
-        gapH4,
-        const Text("우리 목장: 매주 주일 14시 모임!\n느헤미야 기도 프로젝트 참석해주세요~",
-            style: FigmaTextStyles.content16),
-        gapH48,
-
-        /// Button1. TODO🎥
-
-        //gapH20,
-        ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
-          child: Column(
-          children: people.map((person) => PersonRow(person: person)).toList(),
-          ),
-        ),
-
-        /// Button2. get POE bot
-        Expanded(
-          flex: 1,
-          child: Center(
-            child: IconButton(
-                onPressed: () async {}, icon: const Icon(Icons.golf_course)),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

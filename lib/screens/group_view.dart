@@ -7,6 +7,7 @@ import 'package:prayers/screens/base_layout.dart';
 
 import '../constants/app_sizes.dart';
 import '../models/PersonInfo.dart';
+import '../riverpod/message_providers.dart';
 import '../riverpod/room_name_notifier.dart';
 import '../styles/txt_style.dart';
 import '../widgets/avatar.dart';
@@ -37,6 +38,7 @@ class GroupView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
+    final distinctSendersAsyncValue = ref.watch(distinctSendersProvider(roomTag));
 
     return SingleChildScrollView(
       child: BaseLayout(
@@ -56,10 +58,15 @@ class GroupView extends ConsumerWidget {
             /// Button1. TODO🎥
 
             //gapH20,
+            distinctSendersAsyncValue.when(
+            data: (senders) {
+              return Column(
+                children: senders.map((person) => PersonRow(person: person)).toList(),
+              );
+            }, loading: () => const CircularProgressIndicator(),
+              error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
 
-              Column(
-                children: people.map((person) => PersonRow(person: person)).toList(),
-              ),
+
 
           ],
         ),
@@ -69,7 +76,7 @@ class GroupView extends ConsumerWidget {
 }
 
 class PersonRow extends StatelessWidget {
-  final PersonInfo person;
+  final Sender person;
 
   const PersonRow({Key? key, required this.person}) : super(key: key);
 
@@ -86,12 +93,12 @@ class PersonRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
-                  child: Text(person.name, style: FigmaTextStyles.title26),
+                  constraints: const BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
+                  child: Text(person.sender, style: FigmaTextStyles.title26),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
-                  child: Text(person.role, style: FigmaTextStyles.content16),
+                  constraints: const BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
+                  child: Text(person.senderKey.substring(0, 20), style: FigmaTextStyles.content16),
                 ),
               ],
             ),

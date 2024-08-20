@@ -3,7 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/data/api/send_message.dart';
 import 'package:prayers/screens/base_layout.dart';
+import 'package:prayers/screens/homepage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
 import '../models/PersonInfo.dart';
@@ -12,10 +15,12 @@ import '../riverpod/room_name_notifier.dart';
 import '../styles/txt_style.dart';
 import '../widgets/avatar.dart';
 
+
 class GroupView extends ConsumerWidget {
   GroupView(this.roomTag, {super.key});
 
   final String roomTag;
+
 
 
   final List<PersonInfo> people = [
@@ -40,6 +45,7 @@ class GroupView extends ConsumerWidget {
     final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
     final distinctSendersAsyncValue = ref.watch(distinctSendersProvider(roomTag));
 
+
     return SingleChildScrollView(
       child: BaseLayout(
         body: Column(
@@ -55,16 +61,17 @@ class GroupView extends ConsumerWidget {
                 style: FigmaTextStyles.content16),
             gapH20,
 
-            /// Button1. TODO🎥
-
             //gapH20,
             distinctSendersAsyncValue.when(
-            data: (senders) {
-              return Column(
-                children: senders.map((person) => PersonRow(person: person)).toList(),
-              );
+              data: (senders) {
+                return Column(
+                  children: senders.map((person) =>
+                      PersonRow(
+                        person: person,
+                        roomTag: "")).toList(),
+                );
             }, loading: () => const CircularProgressIndicator(),
-              error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
+            error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
 
 
 
@@ -77,8 +84,9 @@ class GroupView extends ConsumerWidget {
 
 class PersonRow extends StatelessWidget {
   final Sender person;
+  final String roomTag;
 
-  const PersonRow({Key? key, required this.person}) : super(key: key);
+  const PersonRow({Key? key, required this.person, required this.roomTag}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +94,9 @@ class PersonRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Avatar(radius: 30),
+          // TODO:
+          //Avatar(radius: 30, roomTag: globalRoomTag, senderKey: person.senderKey),
+          Icon(Icons.camera_alt, size: 30),
           gapW16,
           Expanded(  // Expanded 추가
             child: Column(

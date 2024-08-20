@@ -20,12 +20,15 @@ import 'message_form.dart';
 import 'target_message_screen.dart';
 
 final tabIndexProvider = StateProvider((ref) => 0);
+final roomTagProvider = StateProvider<String>((ref) => '');
+
+String globalRoomTag = '';
 
 class MyHomePage extends ConsumerStatefulWidget {
   static String id = "/home";
 
   MyHomePage({super.key, this.title, this.roomTag}) {
-  //gptUtils.initGPT();
+    //gptUtils.initGPT();
 
   }
 
@@ -67,6 +70,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
     super.initState();
 
     roomTag = widget.roomTag ?? "";
+
     controller= TabController(length: 4, vsync: this);
     controller.addListener(_handleTabSelection);
   }
@@ -86,6 +90,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+
+    globalRoomTag= roomTag;
+
+      //ref.read(roomTagProvider.notifier).state = roomTag;
 
       //final groupNameAsyncValue = ref.watch(groupNameProvider(roomTag));
       //final name= ref.watch(onBoardingNameProvider);

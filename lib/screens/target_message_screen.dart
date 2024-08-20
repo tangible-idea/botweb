@@ -86,7 +86,7 @@ class TargetMessageScreen extends ConsumerWidget {
         const Text('미션 공지', style: FigmaTextStyles.title30,),
         gapH20,
         Wrap(
-          spacing: 10,
+          spacing: 5,
           children: List.generate(7, (index) {
             return ChoiceChip(
               label: Text(days[index]),

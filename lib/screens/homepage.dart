@@ -112,20 +112,20 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       currentIndex: controller.index,
       items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home"
+            icon: Icon(Icons.notification_important_outlined),
+            label: "미션공지"
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notification_add),
+            label: "일반공지"
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.groups),
-            label: "Group"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.church),
-            label: "Church"
+            label: "그룹"
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: "Profile"
+            label: "프로필"
           ),
         ],),
         fab: FloatingActionButton(

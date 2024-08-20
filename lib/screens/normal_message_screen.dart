@@ -101,7 +101,7 @@ class NormalMessageScreen extends ConsumerWidget {
         //const Text('[요일]', style: FigmaTextStyles.title20),
         SizedBox(height: 10),
         Wrap(
-          spacing: 10,
+          spacing: 5,
           children: List.generate(7, (index) {
             return ChoiceChip(
               label: Text(days[index]),
@@ -161,7 +161,7 @@ class NormalMessageScreen extends ConsumerWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            child: const Text('방에서 기도제목 불러오기'),
+            child: const Text('방에서 대화 불러오기'),
             onPressed: () {
 
             },

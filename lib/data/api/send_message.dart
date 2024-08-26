@@ -2,8 +2,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/screens/homepage.dart';
 
-final roomTagProvider = StateProvider<String>((ref) => "399451340753056");
+final roomTagProvider = StateProvider<String>((ref) => globalRoomTag);
 final messageProvider = StateProvider<String>((ref) => "");
 
 // API call function

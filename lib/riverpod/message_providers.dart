@@ -16,7 +16,7 @@ final messageTextProvider = StateProvider<String>((ref) => '');
 
 final sendersTextProvider = StateProvider<String>((ref) => '');
 
-final distinctSendersProvider = FutureProvider.autoDispose.family<List<Sender>, String>((ref, roomTag) async {
+final distinctSendersProvider = FutureProvider.family.autoDispose<List<Sender>, String>((ref, roomTag) async {
   final supabase = Supabase.instance.client;
   final response = await supabase
       .rpc('get_distinct_senders_in_this_room', params: {'p_room_tag': roomTag});
@@ -27,9 +27,9 @@ final distinctSendersProvider = FutureProvider.autoDispose.family<List<Sender>, 
       senderKey: item['sender_key']!
   )).toList();
 
-  senders.forEach((sender) {
+  for (var sender in senders) {
     print('Sender: ${sender.sender}, Sender Key: ${sender.senderKey}');
-  });
+  }
 
   return senders;
 });

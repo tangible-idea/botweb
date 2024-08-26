@@ -4,27 +4,34 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/styles/my_color.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+typedef RoomAndSender= ({String roomTag, String senderKey});
 
 // Define a provider to fetch images
-final imageProvider = FutureProvider.family<String, Map<String, String>>((ref, params) async {
+final imageProvider = FutureProvider.family<String, RoomAndSender>((ref, params) async {
   final supabase = Supabase.instance.client;
 
-  final response = await supabase
-      .from('kakao_profile')
+  final response = await supabase.from('kakao_profile')
       .select('image')
-      .eq('room_tag', params['room_tag'] as String)
-      .eq('sender_key', params['sender_key'] as String).single();
+      .eq('room_tag', params.roomTag)
+      .eq('sender_key', params.senderKey).single();
 
-  return response['image'] as String;
+  final profileImage= response['image'] as String;
+  return profileImage;
 });
 
 
 // Function to convert base64 string to an image widget
-Widget base64ToImage(String base64String) {
-  Uint8List bytes2 = const Base64Decoder().convert(base64String);
-  return Image.memory(bytes2);
+ImageProvider? base64ToImage(String base64String) {
+  try {
+    final removeWhitespace = base64String.replaceAll(RegExp(r'\s'), '');
+    final bytes2 = base64.decode(removeWhitespace);
+    return MemoryImage(bytes2);
+  }catch (Exception) {
+    return null;
+  }
 }
 
 class Avatar extends ConsumerWidget {
@@ -44,20 +51,26 @@ class Avatar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final params = {'room_tag': 'yourRoomTag', 'sender_key': 'yourSenderKey'};
-    final imageAsyncValue = ref.watch(imageProvider(params));
+    print('imageAsyncValue:: Avatar widget is rebuilding');
+    //final params = {'room_tag': roomTag.toString(), 'sender_key': senderKey.toString()};
+    final imageAsyncValue = ref.watch(imageProvider((roomTag: roomTag.toString(), senderKey: senderKey.toString())));
 
     return Container(
       decoration: _borderDecoration(),
-      child: CircleAvatar(
-        radius: radius,
-        backgroundColor: MyColor.kPrimary,
-        child: imageAsyncValue.when(
-          data: (images) => base64ToImage(images),
-          error:(error, stackTrace) => Icon(Icons.camera_alt, size: radius),
-          loading: () => Icon(Icons.camera_alt, size: radius)
+      child: imageAsyncValue.when(
+        data: (profileImage) {
+          print('imageAsyncValue:: Data received: $profileImage');
+          return CircleAvatar(radius: radius, backgroundImage: base64ToImage(profileImage));
+        },
+        error: (error, stackTrace) {
+          print('imageAsyncValue:: Error occurred: $error');
+          return CircleAvatar(radius: radius,
+              child: Icon(Icons.camera_alt));
+        },
+        loading: () => Skeletonizer(
+          child: CircleAvatar(child: Icon(Icons.camera_alt), radius: radius,),
+        ),
       ),
-    )
     );
   }
 

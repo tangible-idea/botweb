@@ -120,6 +120,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       backgroundColor: MyColor.kLightBackground,
       items: const [
           BottomNavigationBarItem(
+              icon: Icon(Icons.groups),
+              label: "그룹"
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.notification_important_outlined),
             label: "미션공지"
           ),
@@ -127,10 +131,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
             icon: Icon(Icons.notification_add),
             label: "일반공지"
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.groups),
-            label: "그룹"
-          ),
+
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: "프로필"
@@ -144,9 +145,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       body: TabBarView(
         controller: controller,
         children: [
+          GroupView(roomTag),
           TargetMessageScreen(roomTag),
           NormalMessageScreen(roomTag),
-          GroupView(roomTag),
           const MessageForm(),
                   ],
                 )

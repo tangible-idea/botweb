@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/styles/my_color.dart';
+import 'package:prayers/widgets/shimmers_avatar.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,12 +68,7 @@ class Avatar extends ConsumerWidget {
           return CircleAvatar(radius: radius,
               child: const Icon(Icons.camera_alt));
         },
-        loading: () => Shimmer.fromColors(
-          baseColor: MyColor.kGreyB0,
-          highlightColor: MyColor.kGrayedPrimary,
-          child: CircleAvatar(radius: radius,
-              child: const Icon(Icons.camera_alt))
-        )
+        loading: () => const ShimmersAvatar()
       ),
     );
   }

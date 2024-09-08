@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/styles/my_color.dart';
 
 import '../constants/fab_actions.dart';
 
@@ -20,7 +21,7 @@ class GroupViewFAB extends ConsumerWidget {
       childrenAnimation: ExpandableFabAnimation.none,
       distance: 70,
       overlayStyle: ExpandableFabOverlayStyle(
-        color: Colors.white.withOpacity(0.1),
+        color: MyColor.kGrayedPrimary.withOpacity(0.25),
       ),
       children: [
         _buildActionRow(context, ref, FABAction.lastConversation),

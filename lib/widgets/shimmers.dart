@@ -21,6 +21,9 @@ class CustomWidget extends StatelessWidget {
     this.shapeBorder = const CircleBorder()
   });
 
+
+
+
   @override
   Widget build(BuildContext context)  => Shimmer.fromColors(
     baseColor: const Color(0x99BBBBBB),

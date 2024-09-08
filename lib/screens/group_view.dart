@@ -15,6 +15,8 @@ import '../widgets/RoundedPeopleIndicator.dart';
 import '../widgets/avatar.dart';
 import '../widgets/fab_group.dart';
 import '../widgets/shimmers.dart';
+import '../widgets/shimmers_avatar.dart';
+import '../widgets/shimmers_people.dart';
 
 
 class GroupView extends ConsumerWidget {
@@ -83,7 +85,8 @@ class GroupView extends ConsumerWidget {
                     gapH20,
                   ]);
                 },
-                loading: () => const CircularProgressIndicator(),
+                loading: () => CustomWidget.rectangular(width: 100, height: 50)
+                 ,
                 error: (error, stack) => Text('Error: $error'),
               ),
 
@@ -95,9 +98,7 @@ class GroupView extends ConsumerWidget {
                     children: senders.map((person) =>
                         PersonRow(person: person)).toList(),
                   );
-              }, loading: () {
-                  return const CircularProgressIndicator();
-              },
+              }, loading: () => const RepeatedShimmerList(),
               error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.')
               )
             ],

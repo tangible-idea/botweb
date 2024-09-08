@@ -4,8 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/styles/my_color.dart';
-import 'package:prayers/widgets/shimmers_avatar.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:prayers/widgets/shimmers/shimmers_avatar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 typedef RoomAndSender= ({String roomTag, String senderKey});

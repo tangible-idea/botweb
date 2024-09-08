@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../styles/my_color.dart';
+import '../../styles/my_color.dart';
 
 class ShimmersAvatar extends StatelessWidget {
   const ShimmersAvatar({super.key});

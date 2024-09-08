@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prayers/widgets/shimmers.dart';
-import 'package:prayers/widgets/shimmers_avatar.dart';
+import 'package:prayers/widgets/shimmers/shimmers.dart';
+import 'package:prayers/widgets/shimmers/shimmers_avatar.dart';
 
 class RepeatedShimmerList extends StatelessWidget {
   const RepeatedShimmerList({super.key});

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:prayers/constants/app_sizes.dart';
 import 'package:prayers/styles/my_color.dart';
 import 'package:prayers/styles/txt_style.dart';
-import 'package:prayers/widgets/shimmers.dart';
+import 'package:prayers/widgets/shimmers/shimmers.dart';
 
 class RoundedPeopleIndicator extends StatelessWidget {
   final int peopleCount;

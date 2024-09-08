@@ -14,10 +14,8 @@ import '../styles/txt_style.dart';
 import '../widgets/RoundedPeopleIndicator.dart';
 import '../widgets/avatar.dart';
 import '../widgets/fab_group.dart';
-import '../widgets/shimmers.dart';
-import '../widgets/shimmers_avatar.dart';
-import '../widgets/shimmers_people.dart';
-
+import '../widgets/shimmers/shimmers.dart';
+import '../widgets/shimmers/shimmers_people.dart';
 
 class GroupView extends ConsumerWidget {
   const GroupView(this.roomTag, {super.key});

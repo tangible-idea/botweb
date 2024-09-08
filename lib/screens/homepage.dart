@@ -8,6 +8,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/screens/normal_message_screen.dart';
 import 'package:prayers/styles/my_color.dart';
+import '../widgets/fab_group.dart';
 import 'group_view.dart';
 import 'message_form.dart';
 import 'target_message_screen.dart';
@@ -131,49 +132,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
           ),
         ],),
         floatingActionButtonLocation: ExpandableFab.location,
-          floatingActionButton: ExpandableFab(
-            type: ExpandableFabType.up,
-            childrenAnimation: ExpandableFabAnimation.none,
-            distance: 70,
-            overlayStyle: ExpandableFabOverlayStyle(
-              color: Colors.white.withOpacity(0.9),
-            ),
-            children: const [
-              Row(
-                children: [
-                  Text('마지막 대화'),
-                  SizedBox(width: 20),
-                  FloatingActionButton.small(
-                    heroTag: null,
-                    onPressed: null,
-                    child: Icon(Icons.notifications),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text('대화내용'),
-                  SizedBox(width: 20),
-                  FloatingActionButton.small(
-                    heroTag: null,
-                    onPressed: null,
-                    child: Icon(Icons.text_fields),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text('활동순위'),
-                  SizedBox(width: 20),
-                  FloatingActionButton.small(
-                    heroTag: null,
-                    onPressed: null,
-                    child: Icon(Icons.star),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        floatingActionButton: const GroupViewFAB(),
       body: TabBarView(
         controller: controller,
         children: [

@@ -57,7 +57,7 @@ class GroupView extends ConsumerWidget {
                     gapH4,
                     pair?.announce?.isNotEmpty == true
                         ? Text(pair?.announce?.toString() ?? "", style: FigmaTextStyles.content16)
-                        : const Text("방 공지사항이 없습니다.\n클릭하여 설정할 수 있습니다.", style: FigmaTextStyles.content16),
+                        : const Text("상태보기", style: FigmaTextStyles.content16),
                     gapH20,
                   ]);
                 },

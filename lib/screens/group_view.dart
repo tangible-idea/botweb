@@ -3,15 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:prayers/data/api/send_message.dart';
 import 'package:prayers/screens/base_layout.dart';
 import 'package:prayers/screens/homepage.dart';
-import 'package:prayers/styles/my_color.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
-import '../models/PersonInfo.dart';
 import '../riverpod/message_providers.dart';
 import '../riverpod/room_name_notifier.dart';
 import '../styles/txt_style.dart';
@@ -60,16 +55,6 @@ class GroupView extends ConsumerWidget {
                 );
             }, loading: () {
                 return const CircularProgressIndicator();
-              // final fakeUsers = List.filled(7, Sender(sender: "", senderKey: ""));
-              //
-              // return Skeletonizer(
-              //   child: Column(
-              //     children: fakeUsers.map((person) =>
-              //         PersonRow(
-              //             person: person,
-              //             roomTag: "")).toList(),
-              //     )
-              //   );
             },
             error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
 
@@ -81,7 +66,6 @@ class GroupView extends ConsumerWidget {
     );
   }
 }
-
 class PersonRow extends StatelessWidget {
   final Sender person;
 
@@ -93,21 +77,32 @@ class PersonRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          // TODO:
           Avatar(radius: 30, roomTag: globalRoomTag, senderKey: person.senderKey),
-          //const CircleAvatar(backgroundColor: MyColor.kPrimary, radius: 30, child: Icon(Icons.camera_alt)),
           gapW16,
-          Expanded(  // Expanded 추가
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
-                  child: Text(person.sender, style: FigmaTextStyles.title26),
-                ),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
-                  child: Text("메시지: ${person.messageCount}개  |  달란트: ${person.score}", style: FigmaTextStyles.content16),
+                Text(person.sender, style: FigmaTextStyles.title26),
+                gapH4, // 아이템 사이 간격 추가
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.energy_savings_leaf_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
+                        gapW4, // 아이콘과 텍스트 사이 간격
+                        Text("${person.score}", style: FigmaTextStyles.content16), // 메시지 개수
+                      ],
+                    ),
+                    gapW16, // 아이템 사이 간격 추가
+                    Row(
+                      children: [
+                        const Icon(Icons.message_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
+                        gapW4, // 아이콘과 텍스트 사이 간격
+                        Text("${person.messageCount}", style: FigmaTextStyles.content16), // 메시지 개수
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),

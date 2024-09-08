@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/styles/my_color.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 typedef RoomAndSender= ({String roomTag, String senderKey});
@@ -65,11 +65,14 @@ class Avatar extends ConsumerWidget {
         error: (error, stackTrace) {
           print('imageAsyncValue:: Error occurred: $error');
           return CircleAvatar(radius: radius,
-              child: Icon(Icons.camera_alt));
+              child: const Icon(Icons.camera_alt));
         },
-        loading: () => Skeletonizer(
-          child: CircleAvatar(child: Icon(Icons.camera_alt), radius: radius,),
-        ),
+        loading: () => Shimmer.fromColors(
+          baseColor: MyColor.kGreyB0,
+          highlightColor: MyColor.kGrayedPrimary,
+          child: CircleAvatar(radius: radius,
+              child: const Icon(Icons.camera_alt))
+        )
       ),
     );
   }

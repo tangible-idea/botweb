@@ -1,6 +1,6 @@
 {
-    "name": "prayers",
-    "short_name": "prayers",
+    "name": "botweb",
+    "short_name": "botweb",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

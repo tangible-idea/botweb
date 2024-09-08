@@ -6,6 +6,9 @@ class MyColor {
   static const Color kPrimary = Color(0xffFAD8B0);
   static const Color kSecondary = Color(0xffE7B171);
   static const Color kLightBackground = Color(0xffFDE8D0);
+
+  static const Color kGold2 = Color(0x33D6A266);
+
   static const Color kNewBackground = Color(0xff877DF8);
   static const Color kGrayedPrimary = Color(0xff8682AF);
   static const Color kPink = Color(0xffff8fa2);

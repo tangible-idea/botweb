@@ -20,6 +20,16 @@ class FigmaTextStyles {
       color: MyColor.kAccent1
   );
 
+  static const TextStyle title34 = TextStyle(
+      fontSize: 34,
+      decoration: TextDecoration.none,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w200,
+      letterSpacing: 0,
+      fontFamily: fontFamily,
+      color: MyColor.kAccent2
+  );
+
   static const TextStyle title30 = TextStyle(
       fontSize: 30,
       decoration: TextDecoration.none,
@@ -57,6 +67,26 @@ class FigmaTextStyles {
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     fontFamily: fontFamily
+  );
+
+  static const TextStyle content10= TextStyle(
+      fontSize: 10,
+      decoration: TextDecoration.none,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      fontFamily: fontFamily,
+      color: MyColor.kAccent2
+  );
+
+  static const TextStyle content12= TextStyle(
+      fontSize: 12,
+      decoration: TextDecoration.none,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0,
+      fontFamily: fontFamily,
+      color: MyColor.kAccent2
   );
 
   static const TextStyle content16= TextStyle(
@@ -215,22 +245,26 @@ class MyTextStyle {
   static const TextStyle body16 = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w400,
+    color: MyColor.kAccent2
   );
 
   static const TextStyle body16L = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w200,
+    color: MyColor.kAccent2
   );
 
   static const TextStyle body16bold = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
+    color: MyColor.kAccent2
   );
 
   static const TextStyle body14subtitle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    color: MyColor.kGrey2
+    color: MyColor.kGrey2,
+
   );
 
   static const TextStyle btn1 = TextStyle(

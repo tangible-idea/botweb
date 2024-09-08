@@ -10,7 +10,9 @@ import '../constants/app_sizes.dart';
 import '../riverpod/message_providers.dart';
 import '../riverpod/room_name_notifier.dart';
 import '../styles/txt_style.dart';
+import '../widgets/RoundedPeopleIndicator.dart';
 import '../widgets/avatar.dart';
+import '../widgets/shimmers.dart';
 
 
 class GroupView extends ConsumerWidget {
@@ -26,41 +28,61 @@ class GroupView extends ConsumerWidget {
 
     return SingleChildScrollView(
       child: BaseLayout(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            groupNameAsyncValue.when(
-              data: (pair) {
-                return Column(children: [
-                  Text(pair?.name ?? '.', style: FigmaTextStyles.title30),
-                  gapH4,
-                  pair?.announce?.isNotEmpty == true
-                      ? Text(pair?.announce?.toString() ?? "", style: FigmaTextStyles.content16)
-                      : const Text("방 공지사항이 없습니다.\n클릭하여 설정할 수 있습니다.", style: FigmaTextStyles.content16),
-                  gapH20,
-                ]);
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              groupNameAsyncValue.when(
+                data: (pair) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Row(
+                      children: [
+                        Text(pair?.name ?? '.', style: FigmaTextStyles.title34),
+                        const Spacer(),
+                        distinctSendersAsyncValue.when(
+                        data: (senders) =>
+                          RoundedPeopleIndicator(peopleCount: senders.length),
+                        error: (Object error, StackTrace stackTrace)
+                            => const CustomWidget.rectangular(width: 70, height: 30),
+                        loading: ()
+                            => const CustomWidget.rectangular(width: 70, height: 30),
+                        )
+                      ],
+                    ),
+
+                    const Divider(),
+                    gapH4,
+                    pair?.announce?.isNotEmpty == true
+                        ? Text(pair?.announce?.toString() ?? "", style: FigmaTextStyles.content16)
+                        : const Text("방 공지사항이 없습니다.\n클릭하여 설정할 수 있습니다.", style: FigmaTextStyles.content16),
+                    gapH20,
+                  ]);
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stack) => Text('Error: $error'),
+              ),
+
+
+              //gapH20,
+              distinctSendersAsyncValue.when(
+                data: (senders) {
+                  return Column(
+                    children: senders.map((person) =>
+                        PersonRow(
+                          person: person)).toList(),
+                  );
+              }, loading: () {
+                  return const CircularProgressIndicator();
               },
-              loading: () => const CircularProgressIndicator(),
-              error: (error, stack) => Text('Error: $error'),
-            ),
-
-
-            //gapH20,
-            distinctSendersAsyncValue.when(
-              data: (senders) {
-                return Column(
-                  children: senders.map((person) =>
-                      PersonRow(
-                        person: person)).toList(),
-                );
-            }, loading: () {
-                return const CircularProgressIndicator();
-            },
-            error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
+              error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.'))
 
 
 
-          ],
+            ],
+          ),
         ),
       ),
     );

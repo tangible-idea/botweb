@@ -4,17 +4,10 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:prayers/constants/app_sizes.dart';
-import 'package:prayers/data/api/send_message.dart';
 import 'package:prayers/screens/normal_message_screen.dart';
-import 'package:prayers/screens/routing/app_router.dart';
 import 'package:prayers/styles/my_color.dart';
-import 'package:prayers/styles/txt_style.dart';
-import 'package:prayers/widgets/avatar.dart';
-import '../riverpod/room_name_notifier.dart';
-import 'default_layout.dart';
 import 'group_view.dart';
 import 'message_form.dart';
 import 'target_message_screen.dart';
@@ -106,7 +99,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
 
       // for tabs
       return Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: MyColor.kPrimary,
           unselectedItemColor: MyColor.kGrayedPrimary,
           selectedFontSize: 10,
@@ -137,13 +130,50 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
             label: "프로필"
           ),
         ],),
-      floatingActionButton: FloatingActionButton(
-          onPressed: ()=> {
-
-          },
-          tooltip: 'tooltip',
-          child: const Icon(Icons.settings),
-        ),
+        floatingActionButtonLocation: ExpandableFab.location,
+          floatingActionButton: ExpandableFab(
+            type: ExpandableFabType.up,
+            childrenAnimation: ExpandableFabAnimation.none,
+            distance: 70,
+            overlayStyle: ExpandableFabOverlayStyle(
+              color: Colors.white.withOpacity(0.9),
+            ),
+            children: const [
+              Row(
+                children: [
+                  Text('마지막 대화'),
+                  SizedBox(width: 20),
+                  FloatingActionButton.small(
+                    heroTag: null,
+                    onPressed: null,
+                    child: Icon(Icons.notifications),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text('대화내용'),
+                  SizedBox(width: 20),
+                  FloatingActionButton.small(
+                    heroTag: null,
+                    onPressed: null,
+                    child: Icon(Icons.text_fields),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Text('활동순위'),
+                  SizedBox(width: 20),
+                  FloatingActionButton.small(
+                    heroTag: null,
+                    onPressed: null,
+                    child: Icon(Icons.star),
+                  ),
+                ],
+              ),
+            ],
+          ),
       body: TabBarView(
         controller: controller,
         children: [

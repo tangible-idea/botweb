@@ -19,16 +19,18 @@ final sendersTextProvider = StateProvider<String>((ref) => '');
 final distinctSendersProvider = FutureProvider.family.autoDispose<List<Sender>, String>((ref, roomTag) async {
   final supabase = Supabase.instance.client;
   final response = await supabase
-      .rpc('get_distinct_senders_in_this_room', params: {'p_room_tag': roomTag});
+      .rpc('get_room_user_stats', params: {'p_room_tag': roomTag});
   print("$response");
 
   List<Sender> senders = response.map<Sender>((item) => Sender(
       sender: item['sender']!,
-      senderKey: item['sender_key']!
+      senderKey: item['sender_key']!,
+      messageCount: item['message_count']!,
+      score: item['quiz_score']!
   )).toList();
 
   for (var sender in senders) {
-    print('Sender: ${sender.sender}, Sender Key: ${sender.senderKey}');
+    print('Sender: ${sender.sender}, Sender Key: ${sender.senderKey}, count: ${sender.messageCount}, score: ${sender.score}}');
   }
 
   return senders;
@@ -49,7 +51,9 @@ class SelectedDaysNotifier extends StateNotifier<List<bool>> {
 class Sender {
   final String sender;
   final String senderKey;
+  final int messageCount;
+  final int score;
 
-  Sender({required this.sender, required this.senderKey});
+  Sender({required this.sender, required this.senderKey, required this.messageCount, required this.score});
 
 }

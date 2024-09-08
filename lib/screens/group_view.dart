@@ -19,7 +19,7 @@ import '../widgets/avatar.dart';
 
 
 class GroupView extends ConsumerWidget {
-  GroupView(this.roomTag, {super.key});
+  const GroupView(this.roomTag, {super.key});
 
   final String roomTag;
 
@@ -35,14 +35,20 @@ class GroupView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             groupNameAsyncValue.when(
-              data: (name) => Text(name ?? '.', style: FigmaTextStyles.title30,),
+              data: (pair) {
+                return Column(children: [
+                  Text(pair?.name ?? '.', style: FigmaTextStyles.title30),
+                  gapH4,
+                  pair?.announce?.isNotEmpty == true
+                      ? Text(pair?.announce?.toString() ?? "", style: FigmaTextStyles.content16)
+                      : const Text("방 공지사항이 없습니다.\n클릭하여 설정할 수 있습니다.", style: FigmaTextStyles.content16),
+                  gapH20,
+                ]);
+              },
               loading: () => const CircularProgressIndicator(),
               error: (error, stack) => Text('Error: $error'),
             ),
-            gapH4,
-            const Text("우리방 공지: 샘플",
-                style: FigmaTextStyles.content16),
-            gapH20,
+
 
             //gapH20,
             distinctSendersAsyncValue.when(
@@ -50,8 +56,7 @@ class GroupView extends ConsumerWidget {
                 return Column(
                   children: senders.map((person) =>
                       PersonRow(
-                        person: person,
-                        roomTag: "")).toList(),
+                        person: person)).toList(),
                 );
             }, loading: () {
                 return const CircularProgressIndicator();
@@ -79,9 +84,8 @@ class GroupView extends ConsumerWidget {
 
 class PersonRow extends StatelessWidget {
   final Sender person;
-  final String roomTag;
 
-  const PersonRow({super.key, required this.person, required this.roomTag});
+  const PersonRow({super.key, required this.person});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +107,7 @@ class PersonRow extends StatelessWidget {
                 ),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 200),  // 적절한 최대 너비 설정
-                  child: Text(person.senderKey.substring(0, 20), style: FigmaTextStyles.content16),
+                  child: Text("메시지: ${person.messageCount}개  |  달란트: ${person.score}", style: FigmaTextStyles.content16),
                 ),
               ],
             ),

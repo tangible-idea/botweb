@@ -11,3 +11,18 @@ class MyGroup with _$MyGroup {
     required String churchId,
   })= _MyGroup;
 }
+
+class GroupAndAnnounce {
+  final String? name;
+  final String? announce;
+
+  GroupAndAnnounce({this.name, this.announce});
+
+  // Factory method to create an instance from a map (response from the database)
+  factory GroupAndAnnounce.fromMap(Map<String, dynamic> map) {
+    return GroupAndAnnounce(
+      name: map['name'] as String?,
+      announce: map['announce'] as String?,
+    );
+  }
+}

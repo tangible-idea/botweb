@@ -23,7 +23,7 @@ enum AppRoute {
 GoRouter goRouter(GoRouterRef ref) {
 
   return GoRouter(
-    initialLocation: '/home/372367911634239',
+    initialLocation: '/home/413839384959459',
     redirect: (context, state) async {
       return null;
     },

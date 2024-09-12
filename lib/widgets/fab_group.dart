@@ -6,7 +6,7 @@ import 'package:prayers/styles/my_color.dart';
 import '../constants/fab_actions.dart';
 
 // Define a provider to track the clicked FAB using the enum
-final clickedFabProvider = StateProvider<FABAction?>((ref) => null);
+final clickedFabProvider = StateProvider<FABAction>((ref) => FABAction.viewStatus);
 
 class GroupViewFAB extends ConsumerWidget {
   const GroupViewFAB({super.key});

@@ -16,6 +16,7 @@ import '../widgets/avatar.dart';
 import '../widgets/fab_group.dart';
 import '../widgets/shimmers/shimmers.dart';
 import '../widgets/shimmers/shimmers_people.dart';
+import 'group/ViewStatusTable.dart';
 
 class GroupView extends ConsumerWidget {
   const GroupView(this.roomTag, {super.key});
@@ -35,7 +36,7 @@ class GroupView extends ConsumerWidget {
         content = LastConversationWidget();
         break;
       case FABAction.viewStatus:
-        content = ViewStatusWidget();
+        content = ViewStatusTable(roomTag: roomTag);
         break;
       case FABAction.viewContent:
         content = ViewContentWidget();
@@ -55,6 +56,8 @@ class GroupView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              // 그룹 이름과 공지사항 가져옴.
               groupNameAsyncValue.when(
                 data: (pair) {
                   return Column(
@@ -88,28 +91,12 @@ class GroupView extends ConsumerWidget {
                 error: (error, stack) => Text('Error: $error'),
               ),
 
-
-              //gapH20,
-              distinctSendersAsyncValue.when(
-                data: (senders) {
-                  return Column(
-                    children: senders.map((person) =>
-                        PersonRow(person: person)).toList(),
-                  );
-              }, loading: () => const RepeatedShimmerList(),
-              error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.')
-              )
+              content // FAB로 선택된 위젯
             ],
           ),
         ),
       ),
     );
-  }
-
-
-
-  Widget ViewStatusWidget() {
-    return ViewStatusTable(roomTag: roomTag);
   }
 
   Widget LastConversationWidget() {
@@ -125,18 +112,6 @@ class GroupView extends ConsumerWidget {
   }
 }
 
-
-class ViewStatusTable extends ConsumerWidget {
-  final String roomTag;
-  const ViewStatusTable({super.key, required this.roomTag});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-
-
-    return const Placeholder();
-  }
-}
 
 
 

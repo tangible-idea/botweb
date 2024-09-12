@@ -20,9 +20,14 @@ class ViewStatusTable extends ConsumerWidget {
       //gapH20,
       distinctSendersAsyncValue.when(
           data: (senders) {
+
+            var listOfPeople= senders.map((person) => PersonRow(person: person)).toList();
+
+            // 메시지 개수로 비교
+            listOfPeople.sort((a,b) => b.person.messageCount.compareTo(a.person.messageCount));
+
             return Column(
-              children: senders.map((person) =>
-                  PersonRow(person: person)).toList(),
+              children: listOfPeople
             );
           }, loading: () => const RepeatedShimmerList(),
           error: (error, stackTrace) => const Text('유저 목록을 불러오는 중 오류가 발생했습니다.')

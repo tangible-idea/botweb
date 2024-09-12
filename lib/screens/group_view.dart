@@ -138,22 +138,24 @@ class PersonRow extends ConsumerWidget {
                 gapH4, // 아이템 사이 간격 추가
                   Row(
                       children: [
-                      Row(
-                      children: [
-                          const Icon(Icons.energy_savings_leaf_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
-                      gapW4, // 아이콘과 텍스트 사이 간격
-                      Text("${person.score}", style: FigmaTextStyles.content16), // 메시지 개수
+                          Row(
+                          children: [
+                                  const Icon(Icons.energy_savings_leaf_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
+                              gapW4, // 아이콘과 텍스트 사이 간격
+                              Text("${person.score}", style: FigmaTextStyles.content16), // 메시지 개수
+                            ],
+                          ),
+                          gapW16, // 아이템 사이 간격 추가
+                          Row(
+                            children: [
+                              const Icon(Icons.message_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
+                              gapW4, // 아이콘과 텍스트 사이 간격
+                              Text("${person.messageCount}", style: FigmaTextStyles.content16), // 메시지 개수
+                            ],
+                          ),
+                        //Spacer(),a
+                        // TODO : ranking icons
                     ],
-                  ),
-                  gapW16, // 아이템 사이 간격 추가
-                  Row(
-                    children: [
-                      const Icon(Icons.message_outlined, size: 16, color: Colors.grey), // 메시지 아이콘
-                      gapW4, // 아이콘과 텍스트 사이 간격
-                      Text("${person.messageCount}", style: FigmaTextStyles.content16), // 메시지 개수
-                    ],
-                  ),
-                  ],
                 ),
               ],
             ),

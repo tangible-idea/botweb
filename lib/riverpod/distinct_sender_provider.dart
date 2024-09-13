@@ -33,7 +33,8 @@ class SenderModel {
   final int? messageCount;
   final int? score;
   final String? lastMessage;
+  final String? lastMessageDate;
 
-  SenderModel({required this.sender, required this.senderKey, this.messageCount, this.score, this.lastMessage});
+  SenderModel({required this.sender, required this.senderKey, this.messageCount, this.score, this.lastMessage, this.lastMessageDate});
 
 }

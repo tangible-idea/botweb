@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/extensions/extension.dart';
 import 'package:prayers/screens/group/PersonRow.dart';
 
 import '../../riverpod/distinct_sender_provider.dart';
@@ -30,7 +31,8 @@ class LastMessageTable extends ConsumerWidget {
             => MessageRow(person: SenderModel(
               sender: fromServer.sender,
               senderKey: fromServer.senderKey,
-              lastMessage: fromServer.text
+              lastMessage: fromServer.text,
+              lastMessageDate: fromServer.createdAt.timeAgo(),
             ))).toList();
 
           // 메시지 개수로 비교

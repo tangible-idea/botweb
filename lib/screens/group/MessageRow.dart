@@ -28,7 +28,13 @@ class MessageRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(person.sender, style: FigmaTextStyles.title26),
+                Row(
+                  children: [
+                    Text(person.sender, style: FigmaTextStyles.title26),
+                    const Spacer(),
+                    Text(person.lastMessageDate ?? "", style: FigmaTextStyles.content10),
+                  ],
+                ),
                 gapH4, // 아이템 사이 간격 추가
                 Row(
                   children: [

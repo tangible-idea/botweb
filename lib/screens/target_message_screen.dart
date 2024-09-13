@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../constants/app_sizes.dart';
+import '../riverpod/distinct_sender_provider.dart';
 import '../riverpod/message_providers.dart';
 import '../styles/txt_style.dart';
 import 'base_layout.dart';

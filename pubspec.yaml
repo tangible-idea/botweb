@@ -133,17 +133,6 @@ flutter:
       fonts:
         - asset: assets/fonts/NanumSquareNeo-Variable.ttf
 
-    - family: NanumSquareRound
-      fonts:
-        - asset: assets/fonts/NanumSquareRoundOTFB.otf
-          weight: 700
-        - asset: assets/fonts/NanumSquareRoundOTFEB.otf
-          weight: 800
-        - asset: assets/fonts/NanumSquareRoundOTFL.otf
-          weight: 300
-        - asset: assets/fonts/NanumSquareRoundOTFR.otf
-          weight: 400
-  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
 analyzer:

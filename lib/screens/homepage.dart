@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:prayers/screens/normal_message_screen.dart';
+import 'package:prayers/styles/colors.dart';
 import 'package:prayers/styles/my_color.dart';
 import '../widgets/fab_group.dart';
 import 'group_view.dart';
@@ -101,7 +102,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
       // for tabs
       return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: MyColor.kPrimary,
+          selectedItemColor: MyColor.kAccent2,
           unselectedItemColor: MyColor.kGrayedPrimary,
           selectedFontSize: 10,
           unselectedFontSize: 10,
@@ -110,27 +111,35 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with SingleTickerProvid
             //ref.read(tabIndexProvider.notifier).update((state) => index);
             controller.animateTo(index);
           },
-      currentIndex: controller.index,
-      backgroundColor: MyColor.kLightBackground,
-      items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.groups),
-              label: "그룹"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notification_important_outlined),
-            label: "미션공지"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notification_add),
-            label: "일반공지"
-          ),
-
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "프로필"
-          ),
-        ],),
+          currentIndex: controller.index,
+          backgroundColor: FigmaColors.background,
+          items: [
+            BottomNavigationBarItem(
+              icon: controller.index == 0
+                  ? const Icon(Icons.groups) // Focused icon
+                  : const Icon(Icons.groups_outlined), // Unfocused icon
+              label: "그룹",
+            ),
+            BottomNavigationBarItem(
+              icon: controller.index == 1
+                  ? const Icon(Icons.notification_important) // Focused icon
+                  : const Icon(Icons.notification_important_outlined), // Unfocused icon
+              label: "미션공지",
+            ),
+            BottomNavigationBarItem(
+              icon: controller.index == 2
+                  ? const Icon(Icons.notification_add) // Focused icon
+                  : const Icon(Icons.notification_add_outlined), // Unfocused icon
+              label: "일반공지",
+            ),
+            BottomNavigationBarItem(
+              icon: controller.index == 3
+                  ? const Icon(Icons.person) // Focused icon
+                  : const Icon(Icons.person_outline), // Unfocused icon
+              label: "프로필",
+            ),
+          ],
+        ),
         floatingActionButtonLocation: ExpandableFab.location,
         floatingActionButton: const GroupViewFAB(),
       body: TabBarView(

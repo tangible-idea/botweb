@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../riverpod/message_providers.dart';
+import '../../riverpod/distinct_sender_provider.dart';
 import '../../widgets/shimmers/shimmers_people.dart';
 import '../group_view.dart';
+import 'PersonRow.dart';
 
 /// 그룹뷰 -> 상태보기 페이지
 class ViewStatusTable extends ConsumerWidget {
@@ -24,7 +24,7 @@ class ViewStatusTable extends ConsumerWidget {
             var listOfPeople= senders.map((person) => PersonRow(person: person)).toList();
 
             // 메시지 개수로 비교
-            listOfPeople.sort((a,b) => b.person.messageCount.compareTo(a.person.messageCount));
+            listOfPeople.sort((a,b) => (b.person.messageCount ?? 0).compareTo(a.person.messageCount ?? 0));
 
             return Column(
               children: listOfPeople

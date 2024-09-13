@@ -89,6 +89,15 @@ class FigmaTextStyles {
       color: MyColor.kAccent2
   );
 
+  static const TextStyle content14= TextStyle(
+      fontSize: 14,
+      decoration: TextDecoration.none,
+      fontStyle: FontStyle.normal,
+      fontWeight: FontWeight.w300,
+      letterSpacing: 0,
+      fontFamily: fontFamily
+  );
+
   static const TextStyle content16= TextStyle(
       fontSize: 16,
       decoration: TextDecoration.none,
@@ -97,6 +106,8 @@ class FigmaTextStyles {
       letterSpacing: 0,
       fontFamily: fontFamily
   );
+
+
 
   TextStyle get textDescription => const TextStyle(
     fontSize: 10,

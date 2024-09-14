@@ -36,7 +36,7 @@ class GroupViewFAB extends ConsumerWidget {
   Row _buildActionRow(BuildContext context, WidgetRef ref, FABAction action) {
     return Row(
       children: [
-        Text(action.label), // Using the label from the enum extension
+        Text(action.title), // Using the label from the enum extension
         const SizedBox(width: 20),
         FloatingActionButton.small(
           heroTag: action.toString(),

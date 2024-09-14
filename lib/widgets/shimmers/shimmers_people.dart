@@ -3,12 +3,13 @@ import 'package:prayers/widgets/shimmers/shimmers.dart';
 import 'package:prayers/widgets/shimmers/shimmers_avatar.dart';
 
 class RepeatedShimmerList extends StatelessWidget {
-  const RepeatedShimmerList({super.key});
+  final int? peopleCount;
+  const RepeatedShimmerList({super.key, this.peopleCount});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: List.generate(10, (index) {
+      children: List.generate(peopleCount ?? 10, (index) {
         return const Padding(
           padding: EdgeInsets.symmetric(vertical: 8.0),  // Optional: Adds spacing between items
           child: Row(

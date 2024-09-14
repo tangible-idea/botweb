@@ -1,5 +1,6 @@
 // 대화 통계 정보를 담는 SenderModel과 유사한 모델 정의
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/screens/homepage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessageStatisticsModel {
@@ -24,14 +25,14 @@ class MessageStatisticsModel {
 }
 
 // Supabase RPC 함수를 호출하고 데이터를 MessageStatisticsModel로 변환하는 Provider
-final messageStatisticsProvider = FutureProvider.family<MessageStatisticsModel?, Map<String, String>>(
-      (ref, params) async {
+final messageStatisticsProvider = FutureProvider.family<MessageStatisticsModel?, String>(
+      (ref, senderKey) async {
     final supabase = Supabase.instance.client;
 
     // Supabase의 RPC 함수 호출 ('get_message_statistics' 함수 사용)
     final response = await supabase.rpc('get_message_statistics', params: {
-      'p_sender_key': params['senderKey'],
-      'p_room_tag': params['roomTag'],
+      'p_sender_key': senderKey,
+      'p_room_tag': globalRoomTag,
     });
     print(response);
 

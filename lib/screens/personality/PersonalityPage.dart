@@ -2,15 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/riverpod/message_statistics_provider.dart';
 import 'package:prayers/screens/homepage.dart';
+import 'package:prayers/styles/txt_style.dart';
 import 'package:prayers/widgets/avatar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../constants/app_sizes.dart';
+import '../../widgets/shimmers/shimmers_people.dart';
 import '../routing/app_router.dart';
-
-class PersonalityPage extends ConsumerStatefulWidget {
+class PersonalityPage extends ConsumerWidget {
   final String roomTag;
   final String senderKey;
 
@@ -20,23 +22,9 @@ class PersonalityPage extends ConsumerStatefulWidget {
     required this.senderKey,
   }) : super(key: key);
 
-  @override
-  _PersonalityPageState createState() => _PersonalityPageState();
-}
-
-class _PersonalityPageState extends ConsumerState<PersonalityPage> {
-  Future<String?>? _personalityFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _personalityFuture = _fetchPersonalityFile();
-  }
-
-
-  Future<String?> _fetchPersonalityFile() async {
+  Future<String?> _fetchPersonalityFile(BuildContext context) async {
     final supabase = Supabase.instance.client;
-    final String filePath = "${widget.roomTag}/${widget.senderKey}.md";
+    final String filePath = "$roomTag/$senderKey.md";
 
     try {
       final bytes = await supabase.storage.from('personality').download(filePath);
@@ -54,33 +42,42 @@ class _PersonalityPageState extends ConsumerState<PersonalityPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userStat= ref.watch(messageStatisticsProvider(senderKey));
+
     return PopScope(
-      canPop: false,
+      canPop: true,
       onPopInvoked: (didPop) {
         if (didPop) return;
-        _goBack();
+        _goBack(context, ref);
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text('Personality'),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
-            onPressed: _goBack,
+            onPressed: () => _goBack(context, ref),
           ),
         ),
         body: Column(
           children: [
-            ListTile(
-              leading: Avatar(radius: 30, roomTag: globalRoomTag, senderKey: widget.senderKey),
-              title: Text(widget.senderKey),
-              subtitle: Text(widget.senderKey),
-            ),
+            userStat.when(data: (userData) {
+              return ListTile(
+                leading: Avatar(radius: 30, roomTag: globalRoomTag, senderKey: senderKey),
+                title: Text(userData?.sender ?? "", style: FigmaTextStyles.title20),
+                subtitle: Text("메시지 개수 : ${userData?.messageCount ?? "알수없음"}" +
+                            "\n총 단어 개수 : ${userData?.totalWordCount ?? "알수없음"}"
+                      ,style: FigmaTextStyles.content12,),
+                );
+            },
+              error: (err, stack) => const Text("error"),
+              loading: () => const RepeatedShimmerList(peopleCount: 1)),
+
             Divider(),
             gapW16,
             Expanded(
               child: FutureBuilder<String?>(
-                future: _personalityFuture,
+                future: _fetchPersonalityFile(context),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
@@ -105,14 +102,14 @@ class _PersonalityPageState extends ConsumerState<PersonalityPage> {
     );
   }
 
-  void _goBack() {
+  void _goBack(BuildContext context, WidgetRef ref) {
     final router = ref.read(goRouterProvider);
     if (router.canPop()) {
       router.pop();
     } else {
       router.goNamed(
         AppRoute.home.name,
-        pathParameters: {'room': widget.roomTag},
+        pathParameters: {'room': roomTag},
       );
     }
   }

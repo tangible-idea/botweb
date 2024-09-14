@@ -1,54 +1,119 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:prayers/screens/routing/app_router.dart';
+import 'package:prayers/screens/homepage.dart';
+import 'package:prayers/widgets/avatar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
-class PersonalityPage extends ConsumerWidget {
+import '../../constants/app_sizes.dart';
+import '../routing/app_router.dart';
+
+class PersonalityPage extends ConsumerStatefulWidget {
   final String roomTag;
   final String senderKey;
 
   const PersonalityPage({
-    super.key,
+    Key? key,
     required this.roomTag,
     required this.senderKey,
-  });
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _PersonalityPageState createState() => _PersonalityPageState();
+}
+
+class _PersonalityPageState extends ConsumerState<PersonalityPage> {
+  Future<String?>? _personalityFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _personalityFuture = _fetchPersonalityFile();
+  }
+
+
+  Future<String?> _fetchPersonalityFile() async {
+    final supabase = Supabase.instance.client;
+    final String filePath = "${widget.roomTag}/${widget.senderKey}.md";
+
+    try {
+      final bytes = await supabase.storage.from('personality').download(filePath);
+      // UTF-8로 디코딩
+      return utf8.decode(bytes);
+    } catch (e) {
+      print('Error fetching file: $e');
+      return null;
+    }
+  }
+
+  void _createPersonalityFile() {
+    // TODO: Implement file creation logic
+    print('Create personality file');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
         if (didPop) return;
-        _goBack(ref);
+        _goBack();
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Personality'),
+          title: Text('Personality'),
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => _goBack(ref),
+            icon: Icon(Icons.arrow_back),
+            onPressed: _goBack,
           ),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Room Tag: $roomTag'),
-              Text('Sender Key: $senderKey'),
-              // 여기에 추가적인 personality 관련 내용을 구현합니다.
-            ],
-          ),
+        body: Column(
+          children: [
+            ListTile(
+              leading: Avatar(radius: 30, roomTag: globalRoomTag, senderKey: widget.senderKey),
+              title: Text(widget.senderKey),
+              subtitle: Text(widget.senderKey),
+            ),
+            Divider(),
+            gapW16,
+            Expanded(
+              child: FutureBuilder<String?>(
+                future: _personalityFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    return Markdown(data: snapshot.data!);
+                  } else {
+                    return Center(
+                      child: ElevatedButton(
+                        onPressed: _createPersonalityFile,
+                        child: Text('성격 분석하기'),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _goBack(WidgetRef ref) {
-    // 홈 페이지로 돌아갑니다.
-    ref.read(goRouterProvider).goNamed(
-      AppRoute.home.name,
-      pathParameters: {'room': roomTag},
-    );
+  void _goBack() {
+    final router = ref.read(goRouterProvider);
+    if (router.canPop()) {
+      router.pop();
+    } else {
+      router.goNamed(
+        AppRoute.home.name,
+        pathParameters: {'room': widget.roomTag},
+      );
+    }
   }
 }

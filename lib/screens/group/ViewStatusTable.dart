@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../riverpod/distinct_sender_provider.dart';
 import '../../widgets/shimmers/shimmers_people.dart';
 import '../group_view.dart';
+import '../routing/app_router.dart';
 import 'PersonRow.dart';
 
 /// 그룹뷰 -> 상태보기 페이지
@@ -21,7 +22,20 @@ class ViewStatusTable extends ConsumerWidget {
       distinctSendersAsyncValue.when(
           data: (senders) {
 
-            var listOfPeople= senders.map((person) => PersonRow(person: person)).toList();
+            var listOfPeople= senders.map((person)
+            => PersonRow(
+              person: person,
+              onTap: (clickPerson) {
+                //clickPerson.
+                ref.read(goRouterProvider).goNamed(
+                  AppRoute.personality.name,
+                  pathParameters: {
+                    'room': roomTag,
+                    'senderKey': clickPerson.senderKey,
+                  },
+                );
+              },
+            )).toList();
 
             // 메시지 개수로 비교
             listOfPeople.sort((a,b) => (b.person.messageCount ?? 0).compareTo(a.person.messageCount ?? 0));

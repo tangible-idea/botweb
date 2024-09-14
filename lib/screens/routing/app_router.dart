@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../personality/PersonalityPage.dart';
 import 'go_router_refresh_stream.dart';
 import 'not_found_screen.dart';
 
@@ -17,6 +18,7 @@ enum AppRoute {
   signIn,
   home,
   profile,
+  personality,
 }
 
 @riverpod
@@ -36,6 +38,17 @@ GoRouter goRouter(GoRouterRef ref) {
         pageBuilder: (context, state) => NoTransitionPage(
           child: MyHomePage(roomTag: state.pathParameters['room']),
         ),
+      ),
+      GoRoute(
+        path: '/personality/:room/:senderKey',
+        name: AppRoute.personality.name,
+        pageBuilder: (context, state) {
+          final roomTag = state.pathParameters['room']!;
+          final senderKey = state.pathParameters['senderKey']!;
+          return NoTransitionPage(
+            child: PersonalityPage(roomTag: roomTag, senderKey: senderKey),
+          );
+        },
       ),
     ],
     errorPageBuilder: (context, state) => const NoTransitionPage(

@@ -70,6 +70,7 @@ dependencies:
   # dotenv
   flutter_dotenv: ^5.1.0
   flutter_expandable_fab: ^2.2.0
+  status_alert: ^1.0.1
 
 
 dev_dependencies:

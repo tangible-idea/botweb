@@ -2,16 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:prayers/data/api/analyze_whole_messages.dart';
 import 'package:prayers/riverpod/message_statistics_provider.dart';
 import 'package:prayers/screens/homepage.dart';
 import 'package:prayers/styles/txt_style.dart';
 import 'package:prayers/widgets/avatar.dart';
+import 'package:status_alert/status_alert.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../constants/app_sizes.dart';
 import '../../widgets/shimmers/shimmers_people.dart';
 import '../routing/app_router.dart';
+
+final isAnalyzingProvider = StateProvider<bool>((ref) => false);
+
 class PersonalityPage extends ConsumerWidget {
   final String roomTag;
   final String senderKey;
@@ -36,32 +41,52 @@ class PersonalityPage extends ConsumerWidget {
     }
   }
 
-  void _createPersonalityFile() {
-    // TODO: Implement file creation logic
-    print('Create personality file');
+  void _createPersonalityFile(WidgetRef ref, BuildContext context, String userName) async {
+
+    StatusAlert.show(
+      context,
+      duration: const Duration(seconds: 2),
+      title: '분석이 시작 됐습니다.',
+      subtitle: '메세지 양에 따라,\n약 10-20초 정도 소요됩니다.',
+      configuration: const IconConfiguration(icon: Icons.done),
+      maxWidth: 260,
+    );
+    ref.read(isAnalyzingProvider.notifier).state= true; // loading done.
+
+    var response= await analyzeWholeMessage(roomTag, senderKey, userName);
+
+    ref.read(isAnalyzingProvider.notifier).state= false; // loading done.
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userStat= ref.watch(messageStatisticsProvider(senderKey));
+    final isWorking= ref.watch(isAnalyzingProvider);
+
+    var userName= "";
 
     return PopScope(
-      canPop: true,
+      canPop: false,
       onPopInvoked: (didPop) {
         if (didPop) return;
         _goBack(context, ref);
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Personality'),
+          title: const Text('분석'),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => _goBack(context, ref),
           ),
         ),
         body: Column(
           children: [
             userStat.when(data: (userData) {
+
+              // 받은 유저 이름 기록.
+              //ref.read(userNameProvider.notifier).state = userData?.sender ?? "";
+              userName= userData?.sender ?? "";
+
               return ListTile(
                 leading: Avatar(radius: 30, roomTag: globalRoomTag, senderKey: senderKey),
                 title: Text(userData?.sender ?? "", style: FigmaTextStyles.title20),
@@ -73,23 +98,34 @@ class PersonalityPage extends ConsumerWidget {
               error: (err, stack) => const Text("error"),
               loading: () => const RepeatedShimmerList(peopleCount: 1)),
 
-            Divider(),
+            const Divider(),
             gapW16,
             Expanded(
               child: FutureBuilder<String?>(
                 future: _fetchPersonalityFile(context),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (isWorking) {
+                    return const Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("분석 중!\n메세지 양에 따라,\n약 10-20초 정도 소요됩니다. \n "),
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    );
+                  }  else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (snapshot.hasData && snapshot.data != null) {
                     return Markdown(data: snapshot.data!);
                   } else {
                     return Center(
                       child: ElevatedButton(
-                        onPressed: _createPersonalityFile,
-                        child: Text('성격 분석하기'),
+                        onPressed: () => {
+                          _createPersonalityFile(ref, context, userName)
+                        },
+                        child: const Text('성격 분석하기'),
                       ),
                     );
                   }

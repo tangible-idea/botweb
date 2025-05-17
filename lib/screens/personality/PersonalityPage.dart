@@ -7,7 +7,7 @@ import 'package:prayers/riverpod/message_statistics_provider.dart';
 import 'package:prayers/screens/homepage.dart';
 import 'package:prayers/styles/txt_style.dart';
 import 'package:prayers/widgets/avatar.dart';
-import 'package:status_alert/status_alert.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -43,13 +43,14 @@ class PersonalityPage extends ConsumerWidget {
 
   void _createPersonalityFile(WidgetRef ref, BuildContext context, String userName) async {
 
-    StatusAlert.show(
-      context,
-      duration: const Duration(seconds: 2),
-      title: '분석이 시작 됐습니다.',
-      subtitle: '메세지 양에 따라,\n약 10-20초 정도 소요됩니다.',
-      configuration: const IconConfiguration(icon: Icons.done),
-      maxWidth: 260,
+    Fluttertoast.showToast(
+      msg: '분석이 시작 됐습니다.\n메세지 양에 따라, 약 10-20초 정도 소요됩니다.',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      fontSize: 16.0
     );
     ref.read(isAnalyzingProvider.notifier).state= true; // loading done.
 
